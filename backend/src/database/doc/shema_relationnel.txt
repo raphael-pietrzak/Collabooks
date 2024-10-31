@@ -1,0 +1,121 @@
+
+
+Les tables principales pour ce schéma sont les suivantes :
+
+	1.	Users : contient les informations des utilisateurs.
+	2.	Stories : représente les histoires créées sur la plateforme.
+	3.	Chapters : chaque histoire est constituée de plusieurs chapitres.
+	4.	Collaborations : gère les co-auteurs d’une histoire (un utilisateur peut coécrire plusieurs histoires).
+	5.	Comments : les utilisateurs peuvent commenter des histoires ou des chapitres.
+	6.	Challenges : représente les défis auxquels les utilisateurs peuvent participer.
+	7.	UserChallenges : gère la participation des utilisateurs aux défis.
+	8.	Friends : représente les relations d’amitié entre utilisateurs.
+	9.	Genres : liste les genres d’histoire disponibles (fantasy, science-fiction, etc.).
+	10.	StoryGenres : pour lier une histoire à un ou plusieurs genres.
+
+2. Schéma relationnel de base
+
+Table	Description
+Users	Stocke les informations des utilisateurs (ID, email, pseudo, âge, etc.)
+Profiles	Détail du profil utilisateur (description du style d’écriture, genres préférés, etc.)
+Stories	Contient les histoires (titre, résumé, date de création, état de publication, ID créateur, etc.)
+Chapters	Contient les chapitres (ID de l’histoire associée, contenu, ordre du chapitre, etc.)
+Collaborations	Associe un utilisateur à une histoire en tant que co-auteur (ID utilisateur, ID histoire, rôle, date d’ajout)
+Comments	Stocke les commentaires faits sur les histoires ou chapitres (ID utilisateur, ID chapitre ou histoire, texte du commentaire, date, etc.)
+Challenges	Détail des défis proposés (titre, description, thème, points de récompense, date de début, date de fin, etc.)
+UserChallenges	Associe un utilisateur à un défi pour suivre la participation et les récompenses obtenues (ID utilisateur, ID défi, état, points gagnés)
+Friends	Gère les relations d’amitié (ID utilisateur 1, ID utilisateur 2, état de la relation)
+Genres	Liste des genres disponibles sur la plateforme (ID genre, nom genre)
+StoryGenres	Associe un ou plusieurs genres à une histoire (ID histoire, ID genre)
+Badges	Représente les badges que les utilisateurs peuvent gagner
+UserBadges	Associe les badges gagnés aux utilisateurs (ID utilisateur, ID badge, date d’obtention)
+
+3. Définition des tables avec attributs
+
+	1.	Users
+	•	user_id (PK)
+	•	email
+	•	pseudo
+	•	password
+	•	age
+	•	is_premium (bool)
+	•	signup_date
+	2.	Profiles
+	•	profile_id (PK)
+	•	user_id (FK) – Relation vers Users
+	•	bio
+	•	favorite_genres
+	•	writing_style
+	3.	Stories
+	•	story_id (PK)
+	•	title
+	•	summary
+	•	creator_id (FK) – Relation vers Users
+	•	created_at
+	•	status (enum: draft, published)
+	4.	Chapters
+	•	chapter_id (PK)
+	•	story_id (FK) – Relation vers Stories
+	•	content
+	•	chapter_order
+	•	created_at
+	5.	Collaborations
+	•	collaboration_id (PK)
+	•	user_id (FK) – Relation vers Users
+	•	story_id (FK) – Relation vers Stories
+	•	role (enum: creator, co-author)
+	•	joined_at
+	6.	Comments
+	•	comment_id (PK)
+	•	user_id (FK) – Relation vers Users
+	•	story_id (nullable, FK) – Relation vers Stories
+	•	chapter_id (nullable, FK) – Relation vers Chapters
+	•	content
+	•	created_at
+	7.	Challenges
+	•	challenge_id (PK)
+	•	title
+	•	description
+	•	theme
+	•	points_reward
+	•	start_date
+	•	end_date
+	8.	UserChallenges
+	•	user_challenge_id (PK)
+	•	user_id (FK) – Relation vers Users
+	•	challenge_id (FK) – Relation vers Challenges
+	•	status (enum: active, completed)
+	•	points_earned
+	9.	Friends
+	•	friendship_id (PK)
+	•	user_id_1 (FK) – Relation vers Users
+	•	user_id_2 (FK) – Relation vers Users
+	•	status (enum: pending, accepted, declined)
+	10.	Genres
+	•	genre_id (PK)
+	•	genre_name
+	11.	StoryGenres
+	•	story_genre_id (PK)
+	•	story_id (FK) – Relation vers Stories
+	•	genre_id (FK) – Relation vers Genres
+	12.	Badges
+	•	badge_id (PK)
+	•	name
+	•	description
+	•	points_required
+	13.	UserBadges
+	•	user_badge_id (PK)
+	•	user_id (FK) – Relation vers Users
+	•	badge_id (FK) – Relation vers Badges
+	•	obtained_date
+
+4. Relations et clés étrangères
+
+	•	Users - Stories : Un utilisateur peut créer plusieurs histoires, mais chaque histoire a un seul créateur.
+	•	Stories - Chapters : Une histoire peut contenir plusieurs chapitres.
+	•	Stories - Collaborations : Une histoire peut avoir plusieurs co-auteurs.
+	•	Stories - Comments : Une histoire peut recevoir plusieurs commentaires, tout comme ses chapitres.
+	•	Users - Friends : Un utilisateur peut avoir des amis (relation n:n).
+	•	Challenges - UserChallenges : Un défi peut avoir plusieurs participants, et un utilisateur peut participer à plusieurs défis.
+	•	Genres - Stories : Un genre peut s’appliquer à plusieurs histoires, et une histoire peut appartenir à plusieurs genres.
+	•	Users - Badges : Un utilisateur peut gagner plusieurs badges, et un badge peut être attribué à plusieurs utilisateurs.
